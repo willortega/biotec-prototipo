@@ -1,0 +1,9 @@
+# IMPORTANTE: use la MISMA versión de scikit-learn con la que entrenó en Colab (ver Paso 4.4)
+streamlit
+supabase
+pandas
+numpy
+scikit-learn==1.6.1
+joblib
+requests
+matplotlib
