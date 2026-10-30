@@ -22,8 +22,8 @@ import requests
 from supabase import create_client
 
 # ---- CONFIGURACIÓN (copiar de Supabase: Project Settings > API) ----
-SUPABASE_URL = "https://TU-PROYECTO.supabase.co"
-SUPABASE_KEY = "TU_ANON_PUBLIC_KEY"
+SUPABASE_URL = "https://lzjhevapnvhdhpzgsixe.supabase.co"
+SUPABASE_KEY = "sb_publishable_RBM0u3Gf9uk_bGpAIRhzHA_RjFHnkYC"
 CAMA = "cama-01"
 NODO = "virtual-01"
 LAT, LON = 9.00, -73.97
