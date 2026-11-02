@@ -33,6 +33,8 @@ RANGOS = {
 ETAPAS = ["Larva", "Prepupa", "Cosechado", "Descartado"]
 TIPOS_EVENTO = ["Alimentación", "Volteo", "Cambio de etapa", "Muestreo", "Incidencia", "Otro"]
 
+from estilo import aplicar_estilo
+aplicar_estilo()
 
 @st.cache_resource
 def cliente():
@@ -78,6 +80,7 @@ st.sidebar.caption("Prototipo de gestión biotecnológica IoT + IA")
 seccion = st.sidebar.radio("Sección", ["Monitoreo", "Lotes", "Eventos", "Trazabilidad", "Modelo de IA"])
 if st.sidebar.button("🔄 Actualizar datos"):
     st.cache_data.clear()
+
 
 # ------------------------------------------------------------- MONITOREO
 if seccion == "Monitoreo":

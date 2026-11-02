@@ -1,0 +1,10 @@
+# Copiar en:  .streamlit/config.toml  (este archivo SÍ se sube a GitHub; no tiene claves)
+[theme]
+base = "dark"
+primaryColor = "#00ff88"
+backgroundColor = "#0a0d14"
+secondaryBackgroundColor = "#101622"
+textColor = "#f8f9fa"
+font = "sans serif"
+
+
