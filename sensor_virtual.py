@@ -53,7 +53,9 @@ def lectura_desde_clima(temp, hum, hum_sus_prev):
     t_aire = temp + random.uniform(-0.4, 0.4) + 1.0           # galpón algo más cálido
     h_aire = min(98, max(35, hum + random.uniform(-2, 2)))
     t_sus = t_aire + random.uniform(2.0, 5.0)                 # calor metabólico de las larvas
-    h_sus = min(80, max(45, hum_sus_prev + random.uniform(-0.6, 0.5)))
+    # La humedad del sustrato oscila alrededor de 65 % y tiende a volver a ese valor (sin deriva)
+    h_sus = hum_sus_prev + 0.05 * (65.0 - hum_sus_prev) + random.uniform(-0.8, 0.8)
+    h_sus = min(80, max(50, h_sus))
     return round(t_aire, 2), round(h_aire, 2), round(t_sus, 2), round(h_sus, 2)
 
 

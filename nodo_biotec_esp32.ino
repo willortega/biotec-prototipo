@@ -24,7 +24,7 @@ const char* SUPABASE_URL = "https://TU-PROYECTO.supabase.co/rest/v1/lecturas";
 const char* SUPABASE_KEY = "TU_ANON_PUBLIC_KEY";
 
 const char* NODO_ID = "nodo-01";   // identifica el dispositivo
-const char* CAMA_ID = "cama-01";   // identifica la cama/caja de cría que se monitorea
+const char* CAMA_ID = "cama-wokwi";   // identifica la cama/caja de cría que se monitorea
 
 // Wokwi: 60000 (1 minuto) para ver datos rápido. Físico: 300000 (5 minutos).
 const unsigned long INTERVALO_MS = 60000;

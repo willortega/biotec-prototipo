@@ -26,7 +26,7 @@ st.set_page_config(page_title="BIOTEC - Gestión inteligente", page_icon="🪰",
 # Rangos de referencia INICIALES: ajustarlos con la empresa y la literatura (Paso 1.9 de la guía)
 RANGOS = {
     "temp_aire": (24.0, 33.0, "Temperatura del aire (°C)"),
-    "hum_aire": (50.0, 80.0, "Humedad del aire (%)"),
+    "hum_aire": (50.0, 90.0, "Humedad del aire (%)"),   # ajustado al clima de El Banco (confirmar con la empresa)
     "temp_sustrato": (25.0, 35.0, "Temperatura del sustrato (°C)"),
     "hum_sustrato": (55.0, 75.0, "Humedad del sustrato (%)"),
 }
@@ -62,10 +62,21 @@ def leer_tabla(nombre: str) -> pd.DataFrame:
     return pd.DataFrame(sb.table(nombre).select("*").order("id", desc=True).execute().data)
 
 
+@st.cache_data(ttl=60)
+def camas_con_lecturas() -> set:
+    datos = sb.table("lecturas").select("cama").order("creado_en", desc=True).limit(2000).execute().data
+    return {r["cama"] for r in datos if r.get("cama")}
+
+
 def camas_disponibles() -> list[str]:
     lotes = leer_tabla("lotes")
     camas = set(lotes["cama"].dropna()) if not lotes.empty else set()
-    return sorted(camas | {"cama-01"})
+    return sorted(camas | camas_con_lecturas() | {"cama-01"})
+
+
+def hora_local(serie: pd.Series) -> pd.Series:
+    """Convierte fechas UTC de la base de datos a hora de Colombia, sin microsegundos."""
+    return pd.to_datetime(serie, utc=True).dt.tz_convert("America/Bogota").dt.strftime("%Y-%m-%d %H:%M")
 
 
 def cargar_modelo():
@@ -80,7 +91,6 @@ st.sidebar.caption("Prototipo de gestión biotecnológica IoT + IA")
 seccion = st.sidebar.radio("Sección", ["Monitoreo", "Lotes", "Eventos", "Trazabilidad", "Modelo de IA"])
 if st.sidebar.button("🔄 Actualizar datos"):
     st.cache_data.clear()
-
 
 # ------------------------------------------------------------- MONITOREO
 if seccion == "Monitoreo":
@@ -229,6 +239,7 @@ elif seccion == "Eventos":
     eventos = leer_tabla("eventos_lote")
     if not eventos.empty:
         eventos = eventos.merge(lotes[["id", "codigo"]], left_on="lote_id", right_on="id", suffixes=("", "_l"))
+        eventos["fecha"] = hora_local(eventos["fecha"])
         st.dataframe(eventos[["fecha", "codigo", "tipo", "cantidad_kg", "descripcion", "responsable"]],
                      use_container_width=True)
 
@@ -261,6 +272,7 @@ elif seccion == "Trazabilidad":
     if eventos.empty:
         st.caption("Sin eventos registrados.")
     else:
+        eventos["fecha"] = hora_local(eventos["fecha"])
         st.dataframe(eventos[["fecha", "tipo", "cantidad_kg", "descripcion", "responsable"]], use_container_width=True)
         alim = eventos[eventos["tipo"] == "Alimentación"]["cantidad_kg"].sum()
         st.caption(f"Total de alimento agregado: {alim:.1f} kg en {int((eventos['tipo'] == 'Alimentación').sum())} alimentaciones")
